@@ -90,7 +90,7 @@ def get_one_user(username):
         "last_name": user.last_name
     }
 
-    return jsonify({"user": response}), 200
+    return jsonify(response), 200
 
 #READ (GET) ALL USERS
 @users_bp.route("", methods=["GET"])
