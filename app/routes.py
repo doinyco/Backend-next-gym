@@ -43,10 +43,18 @@ def get_place_or_abort(place_id):
 @users_bp.route("", methods=["POST"])
 def create_one_user():
     request_body = request.get_json()
-    if "username" not in request_body:
-        return {"message": "Please enter an username!"}, 400
 
-    new_user = User(username=request_body["username"])
+    username = request_body["username"]
+    password_hash = request_body["password_hash"]
+    first_name = request_body["first_name"]
+    last_name = request_body["last_name"]
+
+    new_user = User(
+        username=username,
+        password=password_hash,
+        first_name=first_name,
+        last_name=last_name)
+
     db.session.add(new_user)
     db.session.commit()
 
@@ -56,18 +64,25 @@ def create_one_user():
     }, 201
 
 #READ (GET) ONE USER
-@users_bp.route("<username>", methods=["GET"])
+@users_bp.route("<username>", methods=["POST"])
 def get_one_user(username):
-    user = get_user_by_username(username)
+    request_body = request.get_json()
+    password_hash = request_body["password_hash"]
 
+    user = get_user_by_username(username)
     if user is None:
         return {
             "message": f"User {username} not found"
         }, 404
 
+    if user.password != password_hash:
+        return {"message": "Incorrect password"}, 403
+
     response = {
         "user_id": user.user_id,
-        "username": user.username
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name
     }
 
     return jsonify({"user": response}), 200
