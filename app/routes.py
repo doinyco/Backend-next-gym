@@ -49,6 +49,10 @@ def create_one_user():
     first_name = request_body["first_name"]
     last_name = request_body["last_name"]
 
+    user = get_user_by_username(username)
+    if not user is None:
+        return {"message": f"Username {username} already exists"}, 400
+
     new_user = User(
         username=username,
         password=password_hash,
@@ -59,6 +63,7 @@ def create_one_user():
     db.session.commit()
 
     return {
+        "user_id": new_user.user_id,
         "username": new_user.username,
         "message": f"Successfully created username {new_user.username}"
     }, 201
