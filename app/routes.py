@@ -292,6 +292,7 @@ def enter_progress():
         "message": f"Successfully created history_id {new_history.history_id}"
     }, 201
 
+
 #DELETE HISTORY
 @histories_bp.route("", methods=["DELETE"])
 def delete_progress():
