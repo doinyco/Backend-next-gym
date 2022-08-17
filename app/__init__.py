@@ -22,17 +22,20 @@ def create_app(test_config=None):
     # Import models here for Alembic setup
     from app.models.user import User
     from app.models.place import Place
+    from app.models.history import History
 
     db.init_app(app)
     migrate.init_app(app, db)
     from .routes import users_bp
     from .routes import places_bp
+    from .routes import histories_bp
 
     # Register Blueprints here
     # from .routes import example_bp
     # app.register_blueprint(example_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(places_bp)
+    app.register_blueprint(histories_bp)
 
     CORS(app)
     return app

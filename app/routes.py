@@ -1,11 +1,24 @@
+from datetime import datetime
+
 from flask import Blueprint, request, jsonify, make_response, abort
 from app import db
 from app.models.user import User
 from app.models.place import Place
-
+from app.models.history import History
 
 users_bp = Blueprint("users_bp", __name__, url_prefix="/user")
 places_bp = Blueprint("places_bp", __name__, url_prefix="/places")
+histories_bp = Blueprint("history_bp", __name__, url_prefix="/histories")
+
+def date_str_to_int(s):
+    try:
+        date_int = int(datetime.strptime(s, "%B %d %Y").timestamp())
+        return date_int
+    except:
+        return None
+
+def date_int_to_str(i):
+    return datetime.fromtimestamp(i).strftime("%B %d %Y")
 
 def validate_user_id(user_id):
     try:
@@ -28,7 +41,7 @@ def get_place_or_abort(place_id):
         place_id = int(place_id)
     except ValueError:
         response = {"details": "Invalid data!"}
-        abort(make_response(jsonify(response), 404))
+        abort(make_response(jsonify(response), 400))
 
     chosen_place = Place.query.get(place_id)
 
@@ -38,6 +51,20 @@ def get_place_or_abort(place_id):
     
     return chosen_place
 
+def get_history_or_abort(history_id):
+    try:
+        history_id = int(history_id)
+    except ValueError:
+        response = {"details": "Invalid data!"}
+        abort(make_response(jsonify(response), 400))
+
+    history = History.query.get(history_id)
+
+    if history is None:
+        response = {"message": f"history {history_id} not found"}
+        abort(make_response(jsonify(response), 404))
+    
+    return history
 
 #CREATE ONE NEW USER
 @users_bp.route("", methods=["POST"])
@@ -87,7 +114,7 @@ def get_one_user(username):
         "user_id": user.user_id,
         "username": user.username,
         "first_name": user.first_name,
-        "last_name": user.last_name
+        "last_name": user.last_name,
     }
 
     return jsonify(response), 200
@@ -178,6 +205,28 @@ def read_places_of_one_user(user_id):
         "places": places_response
     }), 200
 
+#READ ALL PROGRESS FROM ONE USER
+@users_bp.route("/<user_id>/histories", methods=["GET"])
+def read_all_progress(user_id):
+    user = validate_user_id(user_id)
+
+    histories = []
+
+    for history in user.histories:
+        histories.append({
+            "history_id": history.history_id,
+            "place_name": history.place_name,
+            "date": date_int_to_str(history.date),
+            "time_spent": history.time_spent,
+            "mood": history.mood,
+            "comments": history.comments
+        })
+
+    return jsonify({
+        "id": user.user_id,
+        "username": user.username,
+        "histories": histories
+    }), 200
 
 #DELETE PLACE
 @places_bp.route("", methods=["DELETE"])
@@ -206,4 +255,66 @@ def delete_place():
 
     return {
         "message": f"Place id {place_id} successfully deleted"
+    }, 200
+
+# CREATE HISTORY AT USER ID
+@histories_bp.route("", methods=["POST"])
+def enter_progress():
+    request_body = request.get_json()
+
+    user_id = request_body["user_id"]
+    place_name = request_body["place_name"]
+    date = request_body["date"]
+    time_spent = request_body["time_spent"]
+    mood = request_body["mood"]
+    comments = request_body["comments"]
+
+    date_int = date_str_to_int(date)
+    if date_int is None:
+        return {"message": f"Invalid date {date}."}, 400
+
+    validate_user_id(user_id)
+
+    new_history = History(
+        place_name = place_name,
+        date = date_int,
+        time_spent = time_spent,
+        mood = mood,
+        comments = comments,
+        user_id = user_id
+    )
+
+    db.session.add(new_history)
+    db.session.commit()
+
+    return {
+        "history_id": new_history.history_id,
+        "message": f"Successfully created history_id {new_history.history_id}"
+    }, 201
+
+#DELETE HISTORY
+@histories_bp.route("", methods=["DELETE"])
+def delete_progress():
+    request_body = request.get_json()
+
+    user_id = request_body["user_id"]
+    history_id = request_body["history_id"]
+
+    user = validate_user_id(user_id)
+    history = get_history_or_abort(history_id)
+
+    found = False
+    for h in user.histories:
+        if h.history_id == history_id:
+            found = True
+            break
+
+    if not found:
+        return {"message": f"History id {history_id} not found"}, 404
+
+    db.session.delete(history)
+    db.session.commit()
+
+    return {
+        "message": f"History id {history} successfully deleted"
     }, 200
