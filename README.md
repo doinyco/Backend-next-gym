@@ -12,7 +12,7 @@ Welcome to the My Next Gym API! This Flask-based backend API provides functional
 7. [API Endpoints](#api-endpoints)
 8. [Database Models](#database-models)
 9. [Frontend Project](#frontend-project)
-10. [DEMO](https://www.youtube.com/watch?v=VFmsh5oNHYA)
+10. 10. [DEMO](https://www.youtube.com/watch?v=VFmsh5oNHYA)
 
 ## Getting Started
 
@@ -37,22 +37,22 @@ Before you begin, ensure you have the following installed on your machine:
 ## Installation
 
 1. Clone this repository to your local machine:
-```shell```
+```shell
 git clone <repository-url>
 
 2. Change to the project directory:
-  ```shell```
+  ```shell
   cd <project-directory>
 
 
 4. Activate the virtual environment:
   - On Windows:
-  ```shell```
+  ```shell
   venv\Scripts\activate
 
 
 - On macOS and Linux:
-```shell```
+```shell
 source venv/bin/activate
 
 
