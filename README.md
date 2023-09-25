@@ -12,7 +12,7 @@ Welcome to the My Next Gym API! This Flask-based backend API provides functional
 7. [API Endpoints](#api-endpoints)
 8. [Database Models](#database-models)
 9. [Frontend Project](#frontend-project)
-10. 10. [DEMO](https://www.youtube.com/watch?v=VFmsh5oNHYA)
+10. [DEMO](https://www.youtube.com/watch?v=VFmsh5oNHYA)
 
 ## Getting Started
 
