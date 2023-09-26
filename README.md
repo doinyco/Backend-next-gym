@@ -37,28 +37,8 @@ Before you begin, ensure you have the following installed on your machine:
 ## Installation
 
 1. Clone this repository to your local machine:
-  ```shell```
+  ```shell
     git clone <repository-url>
-
-2. Change to the project directory:
-  ```shell```
-    cd <project-directory>
-
-
-4. Activate the virtual environment:
-  - On Windows:
-    ```shell```
-      venv\Scripts\activate
-
-
-  - On macOS and Linux:
-    ```shell```
-      source venv/bin/activate
-
-
-4. Install the required packages:
-  ```shell```
-      pip install -r requirements.txt
 
 
 ## Configuration
