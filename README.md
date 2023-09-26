@@ -40,7 +40,24 @@ Before you begin, ensure you have the following installed on your machine:
   ```shell
     git clone <repository-url>
   ```
+2. Change to the project directory:
+  ```shell
+    cd <project-directory>
+  ```
+3. Activate the virtual environment:
+  - On Windows:
+    ```shell
+      venv\Scripts\activate
+    ```
 
+  - On macOS and Linux:
+    ```shell
+      source venv/bin/activate
+    ```
+4. Install the required packages:
+  ```shell
+      pip install -r requirements.txt
+  ```
 
 ## Configuration
 
@@ -115,5 +132,3 @@ The application uses SQLAlchemy to interact with the database. Here are the rele
 You can find the frontend project for My Next Gym on GitHub. The frontend repository contains the user interface and client-side code for interacting with this API.
 
 [Frontend Project on GitHub](https://github.com/doinyco/Frontend-nextgym)
-
-
